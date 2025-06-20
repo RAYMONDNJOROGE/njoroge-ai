@@ -17,7 +17,7 @@
       Please use me lightly as I am still learning and developing.
     </h2>
 
-    <input id="question" type="text" placeholder="Type or Ask a command/Question" />
+    <input id="question" type="text" placeholder="Type or ask a command/question" />
     <button onclick="askModel()" class="button1">Submit</button>
     <button onclick="startListening()" class="button2">🎤 Speak</button>
 
@@ -25,81 +25,84 @@
     <div id="response">Awaiting input...</div>
   </div>
 
- <script>
-  async function askModel() {
-    const question = document.getElementById("question").value;
-    document.getElementById("response").textContent = "Thinking...";
+  <script>
+    async function askModel() {
+      const question = document.getElementById("question").value.trim();
+      if (!question) return;
 
-    try {
-      const res = await fetch("/api/ask", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: question })
-      });
+      document.getElementById("response").textContent = "Thinking...";
 
-      const data = await res.text();
-      document.getElementById("response").textContent = data || "No response received.";
-      speakResponse();
-      handleAppLaunch(data);
-    } catch (err) {
-      document.getElementById("response").textContent = "Error: " + err.message;
-    }
-  }
+      try {
+        const res = await fetch("/api/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: question })
+        });
 
-  // Speech to Text
-  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-  recognition.lang = "en-US";
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
-
-  function startListening() {
-    document.getElementById("response").textContent = "Listening...";
-    recognition.start();
-  }
-
-  recognition.onresult = function (event) {
-    const transcript = event.results[0][0].transcript;
-    document.getElementById("question").value = transcript;
-    askModel();
-  };
-
-  recognition.onerror = function (event) {
-    document.getElementById("response").textContent = "Error: " + event.error;
-  };
-
-  // AI Voice Response
-  function speakResponse() {
-    const response = document.getElementById("response").textContent;
-    if (!response) return;
-
-    const utterance = new SpeechSynthesisUtterance(response);
-    utterance.lang = "en-US";
-    utterance.rate = 1;
-    utterance.pitch = 1;
-    utterance.volume = 1;
-
-    speechSynthesis.speak(utterance);
-  }
-
-  // App Launcher
-  function handleAppLaunch(responseText) {
-    const appLinks = {
-      "gmail": "https://mail.google.com",
-      "youtube": "vnd.youtube://",
-      "maps": "geo:0,0?q=",
-      "drive": "https://drive.google.com",
-      "chrome": "googlechrome://www.google.com",
-      "meet": "https://meet.google.com",
-      "google": "https://www.google.com"
-    };
-
-    for (const app in appLinks) {
-      if (responseText.toLowerCase().includes(`open ${app}`)) {
-        // Open in a new tab where possible
-        window.open(appLinks[app], "_blank");
+        const data = await res.text();
+        document.getElementById("response").textContent = data || "No response received.";
+        speakResponse();
+        handleAppLaunch(data);
+      } catch (err) {
+        document.getElementById("response").textContent = "Error: " + err.message;
       }
     }
-  }
-</script>
+
+    // Speech-to-text setup
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    function startListening() {
+      document.getElementById("response").textContent = "Listening...";
+      recognition.start();
+    }
+
+    recognition.onresult = function(event) {
+      const transcript = event.results[0][0].transcript;
+      document.getElementById("question").value = transcript;
+      askModel();
+    };
+
+    recognition.onerror = function(event) {
+      document.getElementById("response").textContent = "Error: " + event.error;
+    };
+
+    // Voice output
+    function speakResponse() {
+      const response = document.getElementById("response").textContent;
+      if (!response) return;
+
+      const utterance = new SpeechSynthesisUtterance(response);
+      utterance.lang = "en-US";
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      utterance.volume = 1;
+
+      speechSynthesis.speak(utterance);
+    }
+
+    // Launch known apps if mentioned in response
+    function handleAppLaunch(responseText) {
+      const appLinks = {
+        "gmail": "https://mail.google.com",
+        "youtube": "https://youtube.com",
+        "maps": "https://www.google.com/maps",
+        "drive": "https://drive.google.com",
+        "chrome": "https://www.google.com/chrome/",
+        "meet": "https://meet.google.com",
+        "google": "https://www.google.com"
+      };
+
+      const lowerText = responseText.toLowerCase();
+
+      for (const app in appLinks) {
+        if (lowerText.includes(app)) {
+          window.open(appLinks[app], "_blank");
+        }
+      }
+    }
+  </script>
 </body>
 </html>
