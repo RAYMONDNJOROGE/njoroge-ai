@@ -81,7 +81,7 @@
     speechSynthesis.speak(utterance);
   }
 
- function handleAppLaunch(responseText) {
+function handleAppLaunch(responseText) {
   const appLinks = {
     "gmail": "https://mail.google.com",
     "youtube": "https://www.youtube.com",
@@ -98,8 +98,7 @@
     const commandMatch = new RegExp(`\\bopen(?:ing)?\\s+${app}\\b`, "i");
     if (commandMatch.test(lowerText)) {
       window.open(appLinks[app], "_blank"); // opens in a new tab
-      window.location.href = appLinks[app];
-      break; // only open one app per response
+      break;
     }
   }
 }
