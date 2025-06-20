@@ -5,8 +5,8 @@ from google.genai import types
 app = Flask(__name__)
 
 # Replace with your actual API key
-client = genai.Client(api_key="AIzaSyAPVZ4hCgLn4dxmqhTvPoMF10A1ASh0DpU")
-model = "gemini-2.5-flash"
+client = genai.Client(api_key="AIzaSyBE3mFLkUQmv3MK3jZb4gF6iaqc2fF6dpo")
+model = "gemini-2.5-pro"
 
 @app.route("/")
 def index():
