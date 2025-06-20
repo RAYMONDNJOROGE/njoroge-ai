@@ -95,10 +95,10 @@
   const lowerText = responseText.toLowerCase();
 
   for (const app in appLinks) {
-    const openCommand = new RegExp(`\\bopen\\s+${app}\\b`, "i");
-    if (openCommand.test(lowerText)) {
-      window.location.href = appLinks[app]; // More reliable on mobile
-      break; // Only open one app per response to prevent pop-up blocking
+    const commandMatch = new RegExp(`\\bopen(?:ing)?\\s+${app}\\b`, "i");
+    if (commandMatch.test(lowerText)) {
+      window.location.href = appLinks[app];
+      break; // only open one app per response
     }
   }
 }

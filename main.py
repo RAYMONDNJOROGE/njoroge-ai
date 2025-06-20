@@ -4,7 +4,6 @@ from google.genai import types
 
 app = Flask(__name__)
 
-# Hardcoded API key (not recommended for production)
 client = genai.Client(api_key="AIzaSyAPVZ4hCgLn4dxmqhTvPoMF10A1ASh0DpU")
 model = "gemini-2.5-flash"
 
@@ -24,12 +23,19 @@ def ask():
         types.Content(
             role="user",
             parts=[types.Part.from_text(text=question)],
-        ),
+        )
     ]
 
     config = types.GenerateContentConfig(
-        thinking_config=types.ThinkingConfig(thinking_budget=-1),
         response_mime_type="text/plain",
+        thinking_config=types.ThinkingConfig(thinking_budget=-1),
+        system_instruction=[
+            types.Part.from_text(
+                text="You are Njoroge A.I., a helpful assistant that helps students in their learning. "
+                     "When asked your name, always respond with: 'You are Njoroge A.I., a helpful assistant that helps students in their learning.' "
+                     "When a user asks to open an app, reply with: 'Opening [App Name]'"
+            )
+        ]
     )
 
     try:
