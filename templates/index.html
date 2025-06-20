@@ -17,7 +17,7 @@
       Please use me lightly as I am still learning and developing.
     </h2>
 
-    <input id="question" type="text" placeholder="Type or ask a command/question" />
+    <input id="question" type="text" placeholder="Type or Ask a command/Question" />
     <button onclick="askModel()" class="button1">Submit</button>
     <button onclick="startListening()" class="button2">🎤 Speak</button>
 
@@ -25,84 +25,84 @@
     <div id="response">Awaiting input...</div>
   </div>
 
-  <script>
-    async function askModel() {
-      const question = document.getElementById("question").value.trim();
-      if (!question) return;
+ <script>
+  async function askModel() {
+    const question = document.getElementById("question").value;
+    document.getElementById("response").textContent = "Thinking...";
 
-      document.getElementById("response").textContent = "Thinking...";
+    try {
+      const res = await fetch("/api/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: question })
+      });
 
-      try {
-        const res = await fetch("/api/ask", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt: question })
-        });
-
-        const data = await res.text();
-        document.getElementById("response").textContent = data || "No response received.";
-        speakResponse();
-        handleAppLaunch(data);
-      } catch (err) {
-        document.getElementById("response").textContent = "Error: " + err.message;
-      }
+      const data = await res.text();
+      document.getElementById("response").textContent = data || "No response received.";
+      speakResponse();
+      handleAppLaunch(data);
+    } catch (err) {
+      document.getElementById("response").textContent = "Error: " + err.message;
     }
+  }
 
-    // Speech-to-text setup
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = "en-US";
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
+  // Speech to Text
+  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.lang = "en-US";
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
 
-    function startListening() {
-      document.getElementById("response").textContent = "Listening...";
-      recognition.start();
+  function startListening() {
+    document.getElementById("response").textContent = "Listening...";
+    recognition.start();
+  }
+
+  recognition.onresult = function (event) {
+    const transcript = event.results[0][0].transcript;
+    document.getElementById("question").value = transcript;
+    askModel();
+  };
+
+  recognition.onerror = function (event) {
+    document.getElementById("response").textContent = "Error: " + event.error;
+  };
+
+  // AI Voice Response
+  function speakResponse() {
+    const response = document.getElementById("response").textContent;
+    if (!response) return;
+
+    const utterance = new SpeechSynthesisUtterance(response);
+    utterance.lang = "en-US";
+    utterance.rate = 1;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+
+    speechSynthesis.speak(utterance);
+  }
+
+  // App Launcher
+ function handleAppLaunch(responseText) {
+  const appLinks = {
+    "gmail": "https://mail.google.com",
+    "youtube": "https://youtube.com",
+    "maps": "https://www.google.com/maps",
+    "drive": "https://drive.google.com",
+    "chrome": "https://www.google.com/chrome/",
+    "meet": "https://meet.google.com",
+    "google": "https://www.google.com"
+  };
+
+  const lowerText = responseText.toLowerCase();
+
+  for (const app in appLinks) {
+    // Match phrases like "open gmail" or "please open youtube"
+    const openCommand = new RegExp(`\\bopen\\s+${app}\\b`);
+    if (openCommand.test(lowerText)) {
+      window.open(appLinks[app], "_blank");
     }
-
-    recognition.onresult = function(event) {
-      const transcript = event.results[0][0].transcript;
-      document.getElementById("question").value = transcript;
-      askModel();
-    };
-
-    recognition.onerror = function(event) {
-      document.getElementById("response").textContent = "Error: " + event.error;
-    };
-
-    // Voice output
-    function speakResponse() {
-      const response = document.getElementById("response").textContent;
-      if (!response) return;
-
-      const utterance = new SpeechSynthesisUtterance(response);
-      utterance.lang = "en-US";
-      utterance.rate = 1;
-      utterance.pitch = 1;
-      utterance.volume = 1;
-
-      speechSynthesis.speak(utterance);
-    }
-
-    // Launch known apps if mentioned in response
-    function handleAppLaunch(responseText) {
-      const appLinks = {
-        "gmail": "https://mail.google.com",
-        "youtube": "https://youtube.com",
-        "maps": "https://www.google.com/maps",
-        "drive": "https://drive.google.com",
-        "chrome": "https://www.google.com/chrome/",
-        "meet": "https://meet.google.com",
-        "google": "https://www.google.com"
-      };
-
-      const lowerText = responseText.toLowerCase();
-
-      for (const app in appLinks) {
-        if (lowerText.includes(app)) {
-          window.open(appLinks[app], "_blank");
-        }
-      }
-    }
-  </script>
+  }
+}
+</script>
 </body>
 </html>
