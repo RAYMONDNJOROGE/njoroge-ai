@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>njoroge ai</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        Njoroge AI
+    </header>
+  <div id="container">
+    <h2 id="h21">Welcome to Njoroge AI. A simple AI language model trained by yours truly for your benefit 😊. Please use me lightly as I am still learning and developing. Thank you na uweke za kabej 🥲.</h2>
+    <input id="question" type="text" placeholder="Type your question..." re/>
+    <button onclick="askModel()">Submit</button>
+    <h3 id="h31">Response:</h3>
+    <div id="response">Awaiting input...</div>
+  </div>
+
+  <script>
+    async function askModel() {
+      const question = document.getElementById("question").value;
+      document.getElementById("response").textContent = "Thinking...";
+
+      const res = await fetch("/api/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: question })
+      });
+
+      const data = await res.json();
+      document.getElementById("response").textContent = data.response || "No response received.";
+    }
+  </script>
+</body>
+</html>
