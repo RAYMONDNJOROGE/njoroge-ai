@@ -1,10 +1,10 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request
 from google import genai
 from google.genai import types
 
 app = Flask(__name__)
 
-# Replace with your actual API key
+# Hardcoded API key (not recommended for production)
 client = genai.Client(api_key="AIzaSyAPVZ4hCgLn4dxmqhTvPoMF10A1ASh0DpU")
 model = "gemini-2.5-flash"
 
@@ -15,7 +15,10 @@ def index():
 @app.route("/api/ask", methods=["POST"])
 def ask():
     data = request.get_json()
-    question = data.get("prompt", "")
+    question = data.get("prompt", "").strip()
+
+    if not question:
+        return "No prompt provided.", 400, {"Content-Type": "text/plain"}
 
     contents = [
         types.Content(
@@ -30,16 +33,16 @@ def ask():
     )
 
     try:
-        response = ""
-        for chunk in client.models.generate_content_stream(
+        response_stream = client.models.generate_content_stream(
             model=model,
             contents=contents,
             config=config,
-        ):
-            response += chunk.text
-        return jsonify({"response": response})
+        )
+        response_text = "".join(chunk.text for chunk in response_stream)
+        return response_text, 200, {"Content-Type": "text/plain"}
+
     except Exception as e:
-        return jsonify({"response": f"Error: {str(e)}"})
+        return f"Error occurred: {str(e)}", 500, {"Content-Type": "text/plain"}
 
 if __name__ == "__main__":
     app.run(debug=True)

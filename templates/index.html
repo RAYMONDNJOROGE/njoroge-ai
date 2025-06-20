@@ -2,17 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>njoroge ai</title>
+  <title>Njoroge A.I</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <header>
-        Njoroge AI
-    </header>
+  <header>
+    <u>Njoroge A.I</u>
+  </header>
+
   <div id="container">
-    <h2 id="h21">Welcome to Njoroge AI. A simple AI language model trained by yours truly for your benefit 😊. Please use me lightly as I am still learning and developing. Thank you na uweke za kabej 🥲.</h2>
-    <input id="question" type="text" placeholder="Type your question..." re/>
-    <button onclick="askModel()">Submit</button>
+    <h2 id="h21">
+      Welcome to Njoroge A.I.<br>
+      A simple AI language model trained by yours truly for your benefit.<br>
+      Please use me lightly as I am still learning and developing.
+    </h2>
+
+    <label for="language" id="label1">Choose language:</label>
+    <select id="language">
+      <option value="en-US">English</option>
+      <option value="sw-KE">Swahili</option>
+    </select>
+
+    <input id="question" type="text" placeholder="Type your question..." />
+    <button onclick="askModel()" class="button1">Submit</button>
+    <button onclick="startListening()" class="button2">🎤 Speak</button>
+
     <h3 id="h31">Response:</h3>
     <div id="response">Awaiting input...</div>
   </div>
@@ -22,14 +36,56 @@
       const question = document.getElementById("question").value;
       document.getElementById("response").textContent = "Thinking...";
 
-      const res = await fetch("/api/ask", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: question })
-      });
+      try {
+        const res = await fetch("/api/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: question })
+        });
 
-      const data = await res.json();
-      document.getElementById("response").textContent = data.response || "No response received.";
+        const data = await res.text();
+        document.getElementById("response").textContent = data || "No response received.";
+        speakResponse(); // Speak the reply
+      } catch (err) {
+        document.getElementById("response").textContent = "Error: " + err.message;
+      }
+    }
+
+    // Speech to Text
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    function startListening() {
+      const lang = document.getElementById("language").value;
+      recognition.lang = lang;
+      document.getElementById("response").textContent = "Listening...";
+      recognition.start();
+    }
+
+    recognition.onresult = function (event) {
+      const transcript = event.results[0][0].transcript;
+      document.getElementById("question").value = transcript;
+      askModel();
+    };
+
+    recognition.onerror = function (event) {
+      document.getElementById("response").textContent = "Error: " + event.error;
+    };
+
+    // AI Voice Response
+    function speakResponse() {
+      const response = document.getElementById("response").textContent;
+      if (!response) return;
+
+      const lang = document.getElementById("language").value;
+      const utterance = new SpeechSynthesisUtterance(response);
+      utterance.lang = lang;
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      utterance.volume = 1;
+
+      speechSynthesis.speak(utterance);
     }
   </script>
 </body>
