@@ -81,11 +81,10 @@
     speechSynthesis.speak(utterance);
   }
 
-  // App Launcher
  function handleAppLaunch(responseText) {
   const appLinks = {
     "gmail": "https://mail.google.com",
-    "youtube": "https://youtube.com",
+    "youtube": "https://www.youtube.com",
     "maps": "https://www.google.com/maps",
     "drive": "https://drive.google.com",
     "chrome": "https://www.google.com/chrome/",
@@ -96,10 +95,10 @@
   const lowerText = responseText.toLowerCase();
 
   for (const app in appLinks) {
-    // Match phrases like "open gmail" or "please open youtube"
-    const openCommand = new RegExp(`\\bopen\\s+${app}\\b`);
+    const openCommand = new RegExp(`\\bopen\\s+${app}\\b`, "i");
     if (openCommand.test(lowerText)) {
-      window.open(appLinks[app], "_blank");
+      window.location.href = appLinks[app]; // More reliable on mobile
+      break; // Only open one app per response to prevent pop-up blocking
     }
   }
 }
