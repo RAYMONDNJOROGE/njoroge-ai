@@ -97,6 +97,7 @@
   for (const app in appLinks) {
     const commandMatch = new RegExp(`\\bopen(?:ing)?\\s+${app}\\b`, "i");
     if (commandMatch.test(lowerText)) {
+      window.open(appLinks[app], "_blank"); // opens in a new tab
       window.location.href = appLinks[app];
       break; // only open one app per response
     }

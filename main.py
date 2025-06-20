@@ -31,8 +31,8 @@ def ask():
         thinking_config=types.ThinkingConfig(thinking_budget=-1),
         system_instruction=[
             types.Part.from_text(
-                text="You are Njoroge A.I., a helpful assistant that helps students in their learning. "
-                     "When asked your name, always respond with: 'You are Njoroge A.I., a helpful assistant that helps students in their learning.' "
+                text="I am Njoroge A.I., a helpful assistant that helps you in your learning. "
+                     "When asked your name, always respond with: 'I am Njoroge A.I., a helpful assistant that helps you in your A.I needs. Try saying 'Open Youtube'' "
                      "When a user asks to open an app, reply with: 'Opening [App Name]'"
             )
         ]
