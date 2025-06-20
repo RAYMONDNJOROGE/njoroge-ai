@@ -83,13 +83,65 @@
 
 function handleAppLaunch(responseText) {
   const appLinks = {
-    "gmail": "https://mail.google.com",
-    "youtube": "https://www.youtube.com",
-    "maps": "https://www.google.com/maps",
-    "drive": "https://drive.google.com",
-    "chrome": "https://www.google.com/chrome/",
-    "meet": "https://meet.google.com",
-    "google": "https://www.google.com"
+    // Communication & Messaging
+  "gmail": "https://mail.google.com",
+  "outlook": "https://outlook.live.com",
+  "whatsapp": "https://web.whatsapp.com",
+  "telegram": "https://web.telegram.org",
+  "messenger": "https://www.messenger.com",
+  "slack": "https://slack.com/signin",
+
+  // Browsing & Search
+  "chrome": "https://www.google.com/chrome/",
+  "google": "https://www.google.com",
+  "bing": "https://www.bing.com",
+  "duckduckgo": "https://duckduckgo.com",
+  "edge": "https://www.microsoft.com/edge",
+
+  // Productivity & Tools
+  "drive": "https://drive.google.com",
+  "docs": "https://docs.google.com",
+  "sheets": "https://sheets.google.com",
+  "calendar": "https://calendar.google.com",
+  "notion": "https://www.notion.so",
+  "canva": "https://www.canva.com",
+  "chatgpt": "https://chat.openai.com",
+  "copilot": "https://copilot.microsoft.com",
+  "gemini": "https://gemini.google.com",
+
+  // Social Media
+  "facebook": "https://www.facebook.com",
+  "instagram": "https://www.instagram.com",
+  "tiktok": "https://www.tiktok.com",
+  "threads": "https://www.threads.net",
+  "snapchat": "https://web.snapchat.com",
+  "x": "https://x.com",
+
+  // Media & Entertainment
+  "youtube": "https://www.youtube.com",
+  "youtube music": "https://music.youtube.com",
+  "spotify": "https://open.spotify.com",
+  "netflix": "https://www.netflix.com",
+  "prime video": "https://www.primevideo.com",
+  "capcut": "https://www.capcut.com",
+
+  // Navigation & Travel
+  "maps": "https://www.google.com/maps",
+  "uber": "https://m.uber.com",
+  "bolt": "https://bolt.eu",
+  "airbnb": "https://www.airbnb.com",
+
+  // Shopping & Finance
+  "amazon": "https://www.amazon.com",
+  "temu": "https://www.temu.com",
+  "shein": "https://www.shein.com",
+  "paypal": "https://www.paypal.com",
+  "cash app": "https://cash.app",
+
+  // Utilities
+  "meet": "https://meet.google.com",
+  "weather": "https://www.weather.com",
+  "files": "https://drive.google.com/drive/my-drive"
   };
 
   const lowerText = responseText.toLowerCase();
